@@ -1,27 +1,37 @@
-use std::io::{self, stdout};
+use std::io::{self, stdout, Write};
 
 mod eventhandler;
+mod opened_file;
 
 use crossterm::{
-    cursor,
-    event::{read, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, MouseEventKind},
-    terminal::{self, disable_raw_mode, enable_raw_mode},
-    ExecutableCommand,
+    cursor::{self, MoveDown}, event::{read, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, MouseEventKind}, style::Print, terminal::{self, disable_raw_mode, enable_raw_mode}, ExecutableCommand
 };
+use opened_file::OpenedFile;
+
+
 
 pub struct TermEditApp {
     should_close: bool,
+    opened_file: OpenedFile,
 }
 
 impl TermEditApp {
     pub fn create() -> TermEditApp {
         TermEditApp {
             should_close: false,
+            opened_file: OpenedFile::create("test.txt").unwrap(),
         }
     }
 
     pub fn run(&mut self) -> io::Result<()> {
         self.init_terminal_window()?;
+        
+        stdout().execute(cursor::MoveTo(0,0))?;
+        for line in &self.opened_file.lines {
+            stdout().execute(Print(line.as_str()))?;
+            stdout().execute(cursor::MoveToNextLine(1))?;
+        }
+
         loop {
             self.handle_loop()?;
             if self.should_close {
