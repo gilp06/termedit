@@ -1,10 +1,11 @@
-use std::io::{self, stdout, Write};
+use std::io::{self, stdout};
 
-mod eventhandler;
+mod event_handler;
 mod opened_file;
+mod cursor_movement;
 
 use crossterm::{
-    cursor::{self, MoveDown}, event::{read, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, MouseEventKind}, style::Print, terminal::{self, disable_raw_mode, enable_raw_mode}, ExecutableCommand
+    cursor::{self}, event::{read, DisableMouseCapture, EnableMouseCapture, Event}, style::Print, terminal::{self, disable_raw_mode, enable_raw_mode}, ExecutableCommand
 };
 use opened_file::OpenedFile;
 
@@ -31,6 +32,7 @@ impl TermEditApp {
             stdout().execute(Print(line.as_str()))?;
             stdout().execute(cursor::MoveToNextLine(1))?;
         }
+        stdout().execute(cursor::MoveTo(0,0))?;
 
         loop {
             self.handle_loop()?;
@@ -48,6 +50,9 @@ impl TermEditApp {
             Event::Mouse(mouse_event) => self.handle_mouse_event(mouse_event)?,
             _ => (),
         }
+
+        
+
         Ok(())
     }
 

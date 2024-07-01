@@ -1,12 +1,13 @@
 use std::{
     fs::File,
     io::{self, BufRead},
-    vec,
 };
 
 pub struct OpenedFile {
     pub lines: Vec<String>,
     pub file: File,
+    pub current_line: u16,
+    pub current_pos: u16,
 }
 
 impl OpenedFile {
@@ -19,6 +20,11 @@ impl OpenedFile {
             line_vec.push(line);
         }
 
-        Ok(OpenedFile { lines: line_vec , file: file})
+        Ok(OpenedFile {
+            lines: line_vec,
+            file: file,
+            current_line: 0,
+            current_pos: 0,
+        })
     }
 }
