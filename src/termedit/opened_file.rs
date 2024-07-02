@@ -1,6 +1,5 @@
 use std::{
-    fs::File,
-    io::{self, BufRead},
+    borrow::Borrow, fs::File, io::{self, BufRead}
 };
 
 pub struct OpenedFile {
@@ -17,7 +16,7 @@ impl OpenedFile {
         let file = File::open(path)?;
 
         for line in io::BufReader::new(&file).lines().flatten() {
-            line_vec.push(line);
+            line_vec.push(line);            
         }
 
         Ok(OpenedFile {

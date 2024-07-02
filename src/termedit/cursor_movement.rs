@@ -32,7 +32,7 @@ impl OpenedFile {
                 return;
             }
 
-            self.current_pos = self.lines[self.current_line as usize].len() as u16 - 1;
+            self.current_pos = self.lines[self.current_line as usize - 1].len() as u16 - 1;
             self.current_line -= 1;
         } else {
             self.current_pos -= 1;
